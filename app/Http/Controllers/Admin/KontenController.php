@@ -10,27 +10,40 @@ use Illuminate\Support\Str;
 
 class KontenController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        // Menghapus with('user') karena relasi sudah tidak ada
-        $konten = Konten::latest()->paginate(10);
-        return view('admin.konten.index', compact('konten'));
+        $all_jenis_for_filter = Konten::select('jenis')->distinct()->get();
+        $query = Konten::query();
+
+        if ($request->filled('search')) {
+            $query->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('filter_jenis')) {
+            $query->where('jenis', $request->filter_jenis);
+        }
+
+        $konten = $query->latest()->paginate(12);
+
+        return view('admin.konten.index', compact('konten', 'all_jenis_for_filter'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // --- FUNGSI BARU UNTUK MODAL ---
+    public function show(Konten $konten)
+    {
+        // Siapkan URL gambar untuk dikirim sebagai JSON
+        $konten->gambar_url = $konten->gambar 
+            ? Storage::url($konten->gambar) 
+            : 'https://placehold.co/600x400/e2e8f0/e2e8f0?text=.';
+        
+        return response()->json($konten);
+    }
+
     public function create()
     {
         return view('admin.konten.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,9 +56,6 @@ class KontenController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->judul, '-');
-        
-        // Logika untuk user_id dihapus
-        // $data['user_id'] = auth()->id(); 
 
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('konten', 'public');
@@ -56,27 +66,11 @@ class KontenController extends Controller
         return redirect()->route('admin.konten.index')->with('success', 'Konten berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     * * Catatan: Metode show() tidak digunakan dalam alur CRUD ini, 
-     * tapi dibiarkan kosong untuk kelengkapan resource controller.
-     */
-    public function show(Konten $konten)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Konten $konten)
     {
         return view('admin.konten.edit', compact('konten'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Konten $konten)
     {
         $request->validate([
@@ -102,9 +96,6 @@ class KontenController extends Controller
         return redirect()->route('admin.konten.index')->with('success', 'Konten berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Konten $konten)
     {
         if ($konten->gambar) {

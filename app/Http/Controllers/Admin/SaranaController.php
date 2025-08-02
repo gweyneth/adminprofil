@@ -9,10 +9,32 @@ use Illuminate\Support\Facades\Storage;
 
 class SaranaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $saranas = Sarana::latest()->paginate(10);
-        return view('admin.sarana.index', compact('saranas'));
+        // Ambil semua nama sarana yang unik untuk dropdown filter
+        $all_saranas_for_filter = Sarana::select('nama_sarana')->distinct()->get();
+
+        $query = Sarana::query();
+
+        // Logika untuk input pencarian
+        if ($request->filled('search')) {
+            $query->where('nama_sarana', 'like', '%' . $request->search . '%');
+        }
+
+        // Logika untuk filter dropdown
+        if ($request->filled('filter_nama')) {
+            $query->where('nama_sarana', $request->filter_nama);
+        }
+
+        $saranas = $query->latest()->paginate(12);
+
+        return view('admin.sarana.index', compact('saranas', 'all_saranas_for_filter'));
+    }
+
+    public function show(Sarana $sarana)
+    {
+        $sarana->gambar_url = $sarana->gambar ? Storage::url($sarana->gambar) : 'https://placehold.co/600x400/e2e8f0/e2e8f0?text=.';
+        return response()->json($sarana);
     }
 
     public function create()

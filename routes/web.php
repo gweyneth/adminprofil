@@ -63,7 +63,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('pengumuman', PengumumanController::class);
     Route::resource('sarana', SaranaController::class);
     Route::resource('galeri', GaleriController::class)->except(['show']);
-    Route::resource('testimoni', TestimoniController::class)->only(['index', 'destroy']);
+    Route::resource('testimoni', TestimoniController::class)->only(['index', 'show', 'destroy']);
     Route::patch('/testimoni/{testimoni}/toggle-status', [TestimoniController::class, 'toggleStatus'])->name('testimoni.toggleStatus');
 
     // --- Rute Manajemen Akademik ---

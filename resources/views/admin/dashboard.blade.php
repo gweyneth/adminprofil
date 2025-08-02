@@ -88,7 +88,8 @@
                                         <i class="fas fa-comment-dots text-warning mr-2"></i>
                                         Testimoni baru dari <strong>{{ $item->nama_pemberi }}</strong> menunggu persetujuan.
                                     </div>
-                                    <small class="text-muted">{{ $item->created_at->diffForHumans() }}</small>
+                                    {{-- PERBAIKAN: Tambahkan pengecekan if --}}
+                                    <small class="text-muted">{{ $item->created_at ? $item->created_at->diffForHumans() : '' }}</small>
                                 </div>
                                 <a href="{{ route('admin.testimoni.index') }}" class="stretched-link"></a>
                             @elseif($item instanceof \App\Models\Konten)
@@ -97,7 +98,8 @@
                                         <i class="fas fa-file-alt text-success mr-2"></i>
                                         Konten baru ditambahkan: <strong>{{ \Illuminate\Support\Str::limit($item->judul, 40) }}</strong>
                                     </div>
-                                    <small class="text-muted">{{ $item->created_at->diffForHumans() }}</small>
+                                    {{-- PERBAIKAN: Tambahkan pengecekan if --}}
+                                    <small class="text-muted">{{ $item->created_at ? $item->created_at->diffForHumans() : '' }}</small>
                                 </div>
                                 <a href="{{ route('admin.konten.index') }}" class="stretched-link"></a>
                             @endif

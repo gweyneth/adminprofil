@@ -15,11 +15,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
+
+@php
+    // Mengambil data profil sekolah sekali saja untuk digunakan di seluruh layout
+    $profilSekolah = \App\Models\ProfilSekolah::first();
+@endphp
+
 <div class="wrapper">
 
-    <!-- Preloader -->
+    <!-- Preloader dengan Logo Dinamis -->
     <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation__shake" src="https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        <img class="animation__shake" 
+             src="{{ $profilSekolah && $profilSekolah->logo ? \Illuminate\Support\Facades\Storage::url($profilSekolah->logo) : 'https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png' }}" 
+             alt="Logo Sekolah" 
+             height="60" 
+             width="60"
+             style="border-radius: 50%;">
     </div>
 
     @include('layouts.partials.navbar')
@@ -79,7 +90,7 @@
     @endif
 </script>
 
-{{-- BAGIAN BARU: Script untuk Jam Digital --}}
+{{-- Script untuk Jam Digital --}}
 <script>
     function updateClock() {
         const now = new Date();
@@ -88,13 +99,13 @@
         const date = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
         const time = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         
-        document.getElementById('digital-clock').textContent = `${day}, ${date} | ${time}`;
+        const clockElement = document.getElementById('digital-clock');
+        if (clockElement) {
+            clockElement.textContent = `${day}, ${date} | ${time}`;
+        }
     }
 
-    // Update jam setiap detik
     setInterval(updateClock, 1000);
-
-    // Panggil fungsi sekali saat halaman dimuat
     updateClock();
 </script>
 
