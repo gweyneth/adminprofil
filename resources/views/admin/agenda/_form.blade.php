@@ -11,18 +11,32 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group">
             <label for="tanggal_mulai">Tanggal Mulai</label>
-            <input type="datetime-local" name="tanggal_mulai" id="tanggal_mulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" value="{{ old('tanggal_mulai', isset($agenda) ? $agenda->tanggal_mulai->format('Y-m-d\TH:i') : '') }}" required>
+            <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" value="{{ old('tanggal_mulai', isset($agenda) ? $agenda->tanggal_mulai->format('Y-m-d') : '') }}" required>
             @error('tanggal_mulai')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-2">
+        <div class="form-group">
+            <label for="jam_mulai">Jam Mulai</label>
+            <input type="time" name="jam_mulai" id="jam_mulai" class="form-control @error('jam_mulai') is-invalid @enderror" value="{{ old('jam_mulai', $agenda->jam_mulai ?? '') }}" required>
+            @error('jam_mulai')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+    </div>
+    <div class="col-md-4">
         <div class="form-group">
             <label for="tanggal_selesai">Tanggal Selesai (Opsional)</label>
-            <input type="datetime-local" name="tanggal_selesai" id="tanggal_selesai" class="form-control @error('tanggal_selesai') is-invalid @enderror" value="{{ old('tanggal_selesai', isset($agenda) && $agenda->tanggal_selesai ? $agenda->tanggal_selesai->format('Y-m-d\TH:i') : '') }}">
+            <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control @error('tanggal_selesai') is-invalid @enderror" value="{{ old('tanggal_selesai', isset($agenda) && $agenda->tanggal_selesai ? $agenda->tanggal_selesai->format('Y-m-d') : '') }}">
             @error('tanggal_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label for="jam_selesai">Jam Selesai</label>
+            <input type="time" name="jam_selesai" id="jam_selesai" class="form-control @error('jam_selesai') is-invalid @enderror" value="{{ old('jam_selesai', $agenda->jam_selesai ?? '') }}">
+            @error('jam_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
     </div>
 </div>

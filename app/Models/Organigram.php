@@ -10,6 +10,7 @@ class Organigram extends Model
     use HasFactory;
 
     protected $fillable = [
+        'nama_organigram', // <-- Kolom baru
         'gambar',
         'deskripsi',
     ];

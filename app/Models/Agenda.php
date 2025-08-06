@@ -14,16 +14,13 @@ class Agenda extends Model
         'isi_agenda',
         'tanggal_mulai',
         'tanggal_selesai',
+        'jam_mulai',      // <-- Kolom baru
+        'jam_selesai',    // <-- Kolom baru
         'lokasi',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'tanggal_mulai' => 'datetime',
-        'tanggal_selesai' => 'datetime',
+        'tanggal_mulai' => 'date',   // <-- Diubah menjadi date
+        'tanggal_selesai' => 'date', // <-- Diubah menjadi date
     ];
 }

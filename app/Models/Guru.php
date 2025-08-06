@@ -11,10 +11,13 @@ class Guru extends Model
 
     protected $fillable = [
         'nama',
-        'nip',
+        'nuptk', // <-- Diubah dari nip
         'jabatan',
         'foto',
         'jurusan_id',
+        'instagram_url',
+        'facebook_url',
+        'linkedin_url',
     ];
 
     public function jurusan()

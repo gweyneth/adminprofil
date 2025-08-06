@@ -13,5 +13,6 @@ class Jurusan extends Model
         'nama_jurusan',
         'deskripsi',
         'gambar',
+        'website_url', // <-- Kolom baru
     ];
 }

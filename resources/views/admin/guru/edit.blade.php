@@ -12,7 +12,7 @@
             @csrf
             @method('PUT')
             @include('admin.guru._form', ['guru' => $guru])
-             <div class="card-footer text-right">
+             <div class="card-footer bg-white text-right">
                 <a href="{{ route('admin.guru.index') }}" class="btn btn-secondary">Batal</a>
                 <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
             </div>

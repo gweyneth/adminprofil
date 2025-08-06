@@ -6,9 +6,10 @@
             @error('nama')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         <div class="form-group">
-            <label for="nip">NIP (Nomor Induk Pegawai)</label>
-            <input type="text" name="nip" id="nip" class="form-control @error('nip') is-invalid @enderror" value="{{ old('nip', $guru->nip ?? '') }}">
-            @error('nip')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            {{-- Diubah dari NIP menjadi NUPTK --}}
+            <label for="nuptk">NUPTK</label>
+            <input type="text" name="nuptk" id="nuptk" class="form-control @error('nuptk') is-invalid @enderror" value="{{ old('nuptk', $guru->nuptk ?? '') }}">
+            @error('nuptk')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         <div class="form-group">
             <label for="jabatan">Jabatan / Mengajar</label>
@@ -19,6 +20,7 @@
             <label for="jurusan_id">Jurusan (Jika Guru Jurusan)</label>
             <select name="jurusan_id" id="jurusan_id" class="form-control @error('jurusan_id') is-invalid @enderror">
                 <option value="">-- Pilih Jurusan (atau kosongkan untuk staf umum) --</option>
+                {{-- PERBAIKAN: Menggunakan variabel $jurusans --}}
                 @foreach($jurusans as $jurusan)
                     <option value="{{ $jurusan->id }}" {{ (old('jurusan_id', $guru->jurusan_id ?? '') == $jurusan->id) ? 'selected' : '' }}>
                         {{ $jurusan->nama_jurusan }}
@@ -26,6 +28,14 @@
                 @endforeach
             </select>
             @error('jurusan_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+        </div>
+
+        <hr>
+        <h5>Media Sosial (Opsional)</h5>
+         <div class="form-group">
+            <label for="instagram_url">Instagram URL</label>
+            <input type="url" name="instagram_url" id="instagram_url" class="form-control @error('instagram_url') is-invalid @enderror" value="{{ old('instagram_url', $guru->instagram_url ?? '') }}" placeholder="https://instagram.com/username">
+            @error('instagram_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
     </div>
     <div class="col-md-4">

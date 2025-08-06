@@ -33,9 +33,19 @@
                         <td>{{ $loop->iteration + $agendas->firstItem() - 1 }}</td>
                         <td>{{ $item->judul_agenda }}</td>
                         <td>
-                            {{ $item->tanggal_mulai->format('d M Y, H:i') }}
-                            @if($item->tanggal_selesai)
-                                s/d {{ $item->tanggal_selesai->format('d M Y, H:i') }}
+                            {{-- Format tanggal dan jam dalam Bahasa Indonesia --}}
+                            <strong>{{ $item->tanggal_mulai->translatedFormat('l, d F Y') }}</strong><br>
+                            <small>
+                                Pukul {{ \Carbon\Carbon::parse($item->jam_mulai)->format('H:i') }}
+                                @if($item->jam_selesai)
+                                    - {{ \Carbon\Carbon::parse($item->jam_selesai)->format('H:i') }}
+                                @else
+                                    - Selesai
+                                @endif
+                            </small>
+                            @if($item->tanggal_selesai && $item->tanggal_selesai->notEqualTo($item->tanggal_mulai))
+                                <br>s/d<br>
+                                <strong>{{ $item->tanggal_selesai->translatedFormat('l, d F Y') }}</strong>
                             @endif
                         </td>
                         <td>{{ $item->lokasi }}</td>

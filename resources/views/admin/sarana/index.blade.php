@@ -43,17 +43,31 @@
             </div>
         @endif
 
-        {{-- Tampilan Kartu --}}
-        <div class="row">
-            @forelse($saranas as $item)
-                <div class="col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <img src="{{ $item->gambar ? Storage::url($item->gambar) : 'https://placehold.co/600x400/e2e8f0/e2e8f0?text=.' }}" class="card-img-top" alt="{{ $item->nama_sarana }}" style="height: 180px; object-fit: cover;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title font-weight-bold">{{ $item->nama_sarana }}</h5>
-                            <p class="card-text text-muted mt-2 flex-grow-1">{{ \Illuminate\Support\Str::limit($item->deskripsi, 50, '...') }}</p>
-                        </div>
-                        <div class="card-footer bg-white text-center">
+        {{-- Tampilan Tabel --}}
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Foto</th>
+                    <th>Nama Sarana</th>
+                    <th>Deskripsi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($saranas as $item)
+                    <tr>
+                        <td>{{ $loop->iteration + $saranas->firstItem() - 1 }}</td>
+                        <td>
+                            @if($item->gambar)
+                                <img src="{{ Storage::url($item->gambar) }}" alt="Foto" width="100" class="rounded">
+                            @else
+                                <span class="badge badge-secondary">Tidak ada foto</span>
+                            @endif
+                        </td>
+                        <td>{{ $item->nama_sarana }}</td>
+                        <td>{{ \Illuminate\Support\Str::limit($item->deskripsi, 100, '...') }}</td>
+                        <td>
                             <div class="btn-group btn-group-sm" role="group">
                                 <button type="button" class="btn btn-info detail-btn" data-id="{{ $item->id }}" data-toggle="modal" data-target="#detailModal">
                                     <i class="fas fa-eye"></i> Detail
@@ -69,22 +83,21 @@
                                 @csrf
                                 @method('DELETE')
                             </form>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <div class="col-12">
-                    <div class="alert alert-warning text-center">
-                        <h5><i class="icon fas fa-exclamation-triangle"></i> Data Tidak Ditemukan</h5>
-                        @if(request('search') || request('filter_nama'))
-                            Tidak ada data sarana yang cocok dengan kriteria filter Anda.
-                        @else
-                            Belum ada data sarana yang ditambahkan.
-                        @endif
-                    </div>
-                </div>
-            @endforelse
-        </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            @if(request('search') || request('filter_nama'))
+                                Tidak ada data sarana yang cocok dengan kriteria filter Anda.
+                            @else
+                                Belum ada data sarana yang ditambahkan.
+                            @endif
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
     <div class="card-footer clearfix">
         {{ $saranas->appends(request()->query())->links() }}

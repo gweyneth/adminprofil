@@ -25,7 +25,9 @@ class AgendaController extends Controller
             'judul_agenda' => 'required|string|max:255',
             'isi_agenda' => 'required|string',
             'tanggal_mulai' => 'required|date',
+            'jam_mulai' => 'required',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'jam_selesai' => 'nullable',
             'lokasi' => 'required|string|max:255',
         ]);
 
@@ -45,7 +47,9 @@ class AgendaController extends Controller
             'judul_agenda' => 'required|string|max:255',
             'isi_agenda' => 'required|string',
             'tanggal_mulai' => 'required|date',
+            'jam_mulai' => 'required',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'jam_selesai' => 'nullable',
             'lokasi' => 'required|string|max:255',
         ]);
 

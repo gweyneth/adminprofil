@@ -9,9 +9,21 @@ use Illuminate\Support\Facades\Storage;
 
 class GaleriController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $galeris = Galeri::latest()->paginate(12);
+        $query = Galeri::query();
+
+        // Logika untuk input pencarian
+        if ($request->filled('search')) {
+            $query->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        // Logika untuk filter dropdown
+        if ($request->filled('filter_tipe')) {
+            $query->where('tipe', $request->filter_tipe);
+        }
+
+        $galeris = $query->latest()->paginate(12);
         return view('admin.galeri.index', compact('galeris'));
     }
 
@@ -22,12 +34,10 @@ class GaleriController extends Controller
 
     public function store(Request $request)
     {
-        // --- BAGIAN YANG DIPERBAIKI ---
         $request->validate([
             'judul' => 'required|string|max:255',
             'tipe' => 'required|in:foto,video',
             'file_foto' => 'required_if:tipe,foto|image|mimes:jpeg,png,jpg,gif|max:2048',
-            // Menambahkan 'nullable' agar tidak divalidasi saat kosong
             'file_video' => 'required_if:tipe,video|nullable|url',
         ]);
 

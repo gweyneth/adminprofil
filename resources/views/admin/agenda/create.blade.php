@@ -9,7 +9,7 @@
         <form action="{{ route('admin.agenda.store') }}" method="POST">
             @csrf
             @include('admin.agenda._form')
-            <div class="card-footer text-right">
+            <div class="card-footer bg-white text-right">
                 <a href="{{ route('admin.agenda.index') }}" class="btn btn-secondary">Batal</a>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </div>

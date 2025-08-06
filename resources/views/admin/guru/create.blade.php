@@ -11,7 +11,7 @@
         <form action="{{ route('admin.guru.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @include('admin.guru._form')
-            <div class="card-footer text-right">
+            <div class="card-footer bg-white text-right">
                 <a href="{{ route('admin.guru.index') }}" class="btn btn-secondary">Batal</a>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </div>

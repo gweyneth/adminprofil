@@ -9,10 +9,26 @@ use Illuminate\Support\Facades\Storage;
 
 class PrestasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $prestasis = Prestasi::latest()->paginate(10);
+        $query = Prestasi::query();
+
+        if ($request->filled('search')) {
+            $query->where('nama_prestasi', 'like', '%' . $request->search . '%');
+        }
+
+        $prestasis = $query->latest()->paginate(12);
         return view('admin.prestasi.index', compact('prestasis'));
+    }
+
+    // --- FUNGSI BARU UNTUK MODAL ---
+    public function show(Prestasi $prestasi)
+    {
+        $prestasi->foto_url = $prestasi->foto 
+            ? Storage::url($prestasi->foto) 
+            : 'https://placehold.co/600x400/e2e8f0/e2e8f0?text=.';
+        
+        return response()->json($prestasi);
     }
 
     public function create()

@@ -9,61 +9,83 @@ use Illuminate\Support\Facades\Storage;
 
 class OrganigramController extends Controller
 {
-    /**
-     * Menampilkan halaman form organigram.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil data organigram pertama, atau null jika tidak ada
-        $organigram = Organigram::first();
-        return view('admin.organigram.index', compact('organigram'));
+        $all_organigrams_for_filter = Organigram::select('nama_organigram')->distinct()->get();
+        $query = Organigram::query();
+
+        if ($request->filled('filter_nama')) {
+            $query->where('nama_organigram', $request->filter_nama);
+        }
+
+        $organigrams = $query->latest()->paginate(12);
+        return view('admin.organigram.index', compact('organigrams', 'all_organigrams_for_filter'));
     }
 
-    /**
-     * Menyimpan atau memperbarui data organigram.
-     */
-    public function storeOrUpdate(Request $request)
+    public function create()
+    {
+        return view('admin.organigram.create');
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
+            'nama_organigram' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:4096', // Max 4MB
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,svg|max:4096',
         ]);
 
-        // Cari data organigram, atau buat instance baru jika belum ada
-        $organigram = Organigram::firstOrNew(['id' => 1]);
+        $data = $request->all();
 
-        // Proses upload gambar jika ada file baru
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            if ($organigram->gambar && Storage::disk('public')->exists($organigram->gambar)) {
-                Storage::disk('public')->delete($organigram->gambar);
-            }
-            // Simpan gambar baru dan dapatkan path-nya
-            $organigram->gambar = $request->file('gambar')->store('organigram', 'public');
+            $data['gambar'] = $request->file('gambar')->store('organigram', 'public');
         }
-        
-        // Isi deskripsi dan simpan
-        $organigram->deskripsi = $request->deskripsi;
-        $organigram->save();
 
-        return redirect()->route('admin.organigram.index')
-                         ->with('success', 'Organigram Sekolah berhasil diperbarui.');
+        Organigram::create($data);
+
+        return redirect()->route('admin.organigram.index')->with('success', 'Organigram berhasil ditambahkan.');
     }
 
-    /**
-     * Menghapus gambar organigram yang ada.
-     */
-    public function destroyImage()
+    public function show(Organigram $organigram)
     {
-        $organigram = Organigram::first();
+        $organigram->gambar_url = $organigram->gambar ? Storage::url($organigram->gambar) : 'https://placehold.co/600x400/e2e8f0/e2e8f0?text=.';
+        return response()->json($organigram);
+    }
 
-        if ($organigram && $organigram->gambar) {
-            Storage::disk('public')->delete($organigram->gambar);
-            $organigram->gambar = null;
-            $organigram->save();
-            return redirect()->route('admin.organigram.index')->with('success', 'Gambar organigram berhasil dihapus.');
+    public function edit(Organigram $organigram)
+    {
+        return view('admin.organigram.edit', compact('organigram'));
+    }
+
+    public function update(Request $request, Organigram $organigram)
+    {
+        $request->validate([
+            'nama_organigram' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:4096',
+        ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('gambar')) {
+            if ($organigram->gambar) {
+                Storage::disk('public')->delete($organigram->gambar);
+            }
+            $data['gambar'] = $request->file('gambar')->store('organigram', 'public');
         }
 
-        return redirect()->route('admin.organigram.index')->with('error', 'Tidak ada gambar untuk dihapus.');
+        $organigram->update($data);
+
+        return redirect()->route('admin.organigram.index')->with('success', 'Organigram berhasil diperbarui.');
+    }
+
+    public function destroy(Organigram $organigram)
+    {
+        if ($organigram->gambar) {
+            Storage::disk('public')->delete($organigram->gambar);
+        }
+        $organigram->delete();
+
+        return redirect()->route('admin.organigram.index')->with('success', 'Organigram berhasil dihapus.');
     }
 }

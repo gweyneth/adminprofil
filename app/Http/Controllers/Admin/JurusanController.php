@@ -26,6 +26,7 @@ class JurusanController extends Controller
             'nama_jurusan' => 'required|string|max:100',
             'deskripsi' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'website_url' => 'nullable|url', // <-- Validasi baru
         ]);
 
         $data = $request->all();
@@ -39,10 +40,8 @@ class JurusanController extends Controller
         return redirect()->route('admin.jurusan.index')->with('success', 'Jurusan berhasil ditambahkan.');
     }
 
-    // Method 'show' untuk modal (mengembalikan JSON)
     public function show(Jurusan $jurusan)
     {
-        // Tambahkan URL gambar ke data yang dikembalikan
         $jurusan->gambar_url = $jurusan->gambar ? Storage::url($jurusan->gambar) : null;
         return response()->json($jurusan);
     }
@@ -58,6 +57,7 @@ class JurusanController extends Controller
             'nama_jurusan' => 'required|string|max:100',
             'deskripsi' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'website_url' => 'nullable|url', // <-- Validasi baru
         ]);
 
         $data = $request->all();

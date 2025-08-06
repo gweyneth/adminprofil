@@ -24,10 +24,8 @@ use App\Http\Controllers\Admin\AdminProfileController;
 |--------------------------------------------------------------------------
 */
 
-// Rute Halaman Awal (Publik)
-Route::get('/', function () {
-    return 'Ini Halaman Depan. Silakan akses <a href="/login">/login</a> untuk masuk.';
-});
+// Rute Halaman Awal (Publik) - Langsung arahkan ke halaman login
+Route::redirect('/', '/login');
 
 
 //=======================================================================
@@ -43,21 +41,21 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 //=======================================================================
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     
-    // Rute Dasbor
+    // Rute Dasbor & Profil Admin
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-     // Rute untuk Kelola Profil Admin
+    
      Route::get('/profil-admin', [AdminProfileController::class, 'index'])->name('profil_admin.index');
-     Route::put('/profil-admin', [AdminProfileController::class, 'update'])->name('profil_admin.update');
-
-    // --- Rute Manajemen Konten ---
+     Route::put('/profil-admin/profile', [AdminProfileController::class, 'updateProfile'])->name('profil_admin.updateProfile');
+     Route::put('/profil-admin/password', [AdminProfileController::class, 'updatePassword'])->name('profil_admin.updatePassword');
+ 
+    // --- Rute Manajemen Halaman & Profil ---
     Route::get('/profil-sekolah', [ProfilSekolahController::class, 'index'])->name('profil.index');
     Route::post('/profil-sekolah', [ProfilSekolahController::class, 'storeOrUpdate'])->name('profil.storeOrUpdate');
     
-    Route::get('/organigram', [OrganigramController::class, 'index'])->name('organigram.index');
-    Route::post('/organigram', [OrganigramController::class, 'storeOrUpdate'])->name('organigram.storeOrUpdate');
-    Route::delete('/organigram/hapus-gambar', [OrganigramController::class, 'destroyImage'])->name('organigram.destroyImage');
+    // --- Rute Organigram (Diperbarui) ---
+    Route::resource('organigram', OrganigramController::class);
     
+    // --- Rute Publikasi ---
     Route::resource('konten', KontenController::class);
     Route::resource('agenda', AgendaController::class);
     Route::resource('pengumuman', PengumumanController::class);

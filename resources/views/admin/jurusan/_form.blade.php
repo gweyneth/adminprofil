@@ -10,6 +10,13 @@
     @error('deskripsi')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
+{{-- Input Baru --}}
+<div class="form-group">
+    <label for="website_url">Link Website Jurusan (Opsional)</label>
+    <input type="url" name="website_url" id="website_url" class="form-control @error('website_url') is-invalid @enderror" value="{{ old('website_url', $jurusan->website_url ?? '') }}" placeholder="https://contoh.com/jurusan-pplg">
+    @error('website_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
+</div>
+
 <div class="form-group">
     <label for="gambar">Gambar Jurusan</label>
     <input type="file" name="gambar" id="gambar" class="form-control-file @error('gambar') is-invalid @enderror">

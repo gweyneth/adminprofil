@@ -11,6 +11,26 @@
         </div>
     </div>
     <div class="card-body">
+        {{-- Form Pencarian dan Filter --}}
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <form action="{{ route('admin.galeri.index') }}" method="GET" class="form-inline justify-content-center">
+                    <div class="form-group mx-sm-2 mb-2">
+                        <input type="text" name="search" class="form-control" placeholder="Cari judul..." value="{{ request('search') }}">
+                    </div>
+                    <div class="form-group mx-sm-2 mb-2">
+                        <select name="filter_tipe" class="form-control">
+                            <option value="">-- Semua Tipe --</option>
+                            <option value="foto" {{ request('filter_tipe') == 'foto' ? 'selected' : '' }}>Foto</option>
+                            <option value="video" {{ request('filter_tipe') == 'video' ? 'selected' : '' }}>Video</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2"><i class="fas fa-search"></i> Terapkan</button>
+                    <a href="{{ route('admin.galeri.index') }}" class="btn btn-secondary mb-2 ml-2">Reset</a>
+                </form>
+            </div>
+        </div>
+
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -26,7 +46,6 @@
                             <img src="{{ Storage::url($item->file) }}" class="card-img-top" alt="{{ $item->judul }}" style="height: 200px; object-fit: cover;">
                         @else
                             @php
-                                // Ekstrak YouTube video ID
                                 preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $item->file, $matches);
                                 $videoId = $matches[1] ?? null;
                             @endphp
@@ -61,13 +80,20 @@
                 </div>
             @empty
                 <div class="col-12">
-                    <p class="text-center text-muted">Belum ada item di galeri.</p>
+                    <div class="alert alert-warning text-center">
+                        <h5><i class="icon fas fa-exclamation-triangle"></i> Data Tidak Ditemukan</h5>
+                        @if(request('search') || request('filter_tipe'))
+                            Tidak ada item galeri yang cocok dengan kriteria filter Anda.
+                        @else
+                            Belum ada item di galeri.
+                        @endif
+                    </div>
                 </div>
             @endforelse
         </div>
     </div>
     <div class="card-footer">
-        {{ $galeris->links() }}
+        {{ $galeris->appends(request()->query())->links() }}
     </div>
 </div>
 @endsection

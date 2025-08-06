@@ -9,19 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfilSekolahController extends Controller
 {
-    /**
-     * Menampilkan form untuk mengedit atau membuat profil sekolah.
-     */
     public function index()
     {
-        // Ambil data profil pertama, atau buat instance baru jika tidak ada
         $profil = ProfilSekolah::firstOrNew([]);
         return view('admin.profil.index', compact('profil'));
     }
 
-    /**
-     * Menyimpan data profil sekolah (baik membuat baru atau update).
-     */
     public function storeOrUpdate(Request $request)
     {
         $request->validate([
@@ -33,30 +26,23 @@ class ProfilSekolahController extends Controller
             'sejarah' => 'required|string',
             'visi' => 'required|string',
             'misi' => 'required|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', // Diperbarui
             'maps' => 'nullable|string',
             'facebook_url' => 'nullable|url',
             'instagram_url' => 'nullable|url',
             'youtube_url' => 'nullable|url',
         ]);
 
-        // Cari data profil, atau buat instance baru
         $profil = ProfilSekolah::firstOrNew(['id' => 1]);
-        
-        // Ambil semua data kecuali logo
         $data = $request->except('logo');
 
-        // Proses upload logo jika ada file baru
         if ($request->hasFile('logo')) {
-            // Hapus logo lama jika ada
             if ($profil->logo && Storage::disk('public')->exists($profil->logo)) {
                 Storage::disk('public')->delete($profil->logo);
             }
-            // Simpan logo baru dan dapatkan path-nya
             $data['logo'] = $request->file('logo')->store('logos', 'public');
         }
         
-        // Isi data dan simpan
         $profil->fill($data)->save();
 
         return redirect()->route('admin.profil.index')

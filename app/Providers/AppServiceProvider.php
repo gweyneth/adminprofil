@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon; // <-- Import Carbon
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,11 +16,10 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
+    
     public function boot(): void
     {
-        //
+        
+        Carbon::setLocale('id');
     }
 }
