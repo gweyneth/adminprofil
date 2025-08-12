@@ -130,6 +130,14 @@
                         </li>
                     </ul>
                 </li>
+                
+                <li class="nav-header">PENGATURAN TAMPILAN</li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.background.index') }}" class="nav-link {{ request()->routeIs('admin.background.index') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-image"></i>
+                        <p>Kelola Background</p>
+                    </a>
+                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

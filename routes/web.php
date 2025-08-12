@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\PostEkstrakurikulerController;
 use App\Http\Controllers\Admin\TestimoniController;
 use App\Http\Controllers\Admin\PrestasiController;
 use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\BackgroundController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -70,5 +71,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('ekstrakurikuler', EkstrakurikulerController::class);
     Route::resource('post-ekstrakurikuler', PostEkstrakurikulerController::class);
     Route::resource('prestasi', PrestasiController::class);
+
+    // Rute untuk Kelola Background
+    Route::get('/backgrounds', [BackgroundController::class, 'index'])->name('background.index');
+    Route::post('/backgrounds', [BackgroundController::class, 'store'])->name('background.store');
 
 });
